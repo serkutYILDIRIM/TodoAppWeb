@@ -1,0 +1,146 @@
+.activity-list-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  position: relative;
+
+  .header-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .app-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+
+  .content {
+    padding: 40px 20px 100px;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+
+      .activities-table {
+        width: 100%;
+
+        th {
+          background-color: #f5f5f5;
+          font-weight: 600;
+          color: #333;
+          padding: 16px;
+        }
+
+        td {
+          padding: 16px;
+          border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+          background-color: #fafafa;
+        }
+
+        .completed-title {
+          text-decoration: line-through;
+          color: #999;
+        }
+
+        .activity-detail {
+          font-size: 12px;
+          color: #666;
+          margin-top: 4px;
+        }
+
+        .priority-chip {
+          font-size: 12px;
+          font-weight: 500;
+          padding: 4px 12px;
+          border-radius: 12px;
+          
+          &.priority-high {
+            background-color: #f44336;
+            color: white;
+          }
+
+          &.priority-medium {
+            background-color: #ff9800;
+            color: white;
+          }
+
+          &.priority-low {
+            background-color: #4caf50;
+            color: white;
+          }
+        }
+
+        .no-priority {
+          color: #999;
+          font-style: italic;
+        }
+      }
+
+      .no-activities {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: #999;
+
+        mat-icon {
+          font-size: 64px;
+          width: 64px;
+          height: 64px;
+          margin-bottom: 16px;
+        }
+
+        p {
+          font-size: 16px;
+          text-align: center;
+        }
+      }
+    }
+
+    .fab-add-activity {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 1000;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .activity-list-container {
+    .header-toolbar {
+      .app-title {
+        font-size: 16px;
+      }
+    }
+
+    .content {
+      padding: 20px 10px 100px;
+
+      .fab-add-activity {
+        bottom: 16px;
+        right: 16px;
+      }
+    }
+  }
+}
