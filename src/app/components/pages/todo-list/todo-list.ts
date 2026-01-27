@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../../services/auth.service';
 import { TodoService } from '../../../services/todo.service';
 import { TodoItemDto } from '../../../models/todo-item.dto';
+import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-todo-list',
@@ -83,17 +84,27 @@ export class TodoList implements OnInit {
   }
 
   deleteTodo(todoId: number): void {
-    const confirmed = confirm('Are you sure you want to delete this todo?');
-    if (confirmed) {
-      this.todoService.deleteTodo(todoId).subscribe({
-        next: () => {
-          this.loadTodos();
-        },
-        error: (error) => {
-          console.error('Error deleting todo:', error);
-        }
-      });
-    }
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      data: {
+        title: 'Delete Todo',
+        message: 'Are you sure you want to delete this todo? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.todoService.deleteTodo(todoId).subscribe({
+          next: () => {
+            this.loadTodos();
+          },
+          error: (error) => {
+            console.error('Error deleting todo:', error);
+          }
+        });
+      }
+    });
   }
 
   editTodo(todoId: number): void {

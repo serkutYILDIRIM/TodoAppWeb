@@ -8,12 +8,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivityService } from '../../../services/activity.service';
 import { TodoService } from '../../../services/todo.service';
 import { ActivityDto } from '../../../models/activity.dto';
 import { TodoItemDto } from '../../../models/todo-item.dto';
+import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-activity-list',
@@ -27,6 +29,7 @@ import { TodoItemDto } from '../../../models/todo-item.dto';
     MatTableModule,
     MatCheckboxModule,
     MatChipsModule,
+    MatDialogModule,
     MatProgressSpinnerModule,
     MatTooltipModule
   ],
@@ -39,6 +42,7 @@ export class ActivityList implements OnInit {
   private readonly todoService = inject(TodoService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly dialog = inject(MatDialog);
 
   todoId = signal<number>(0);
   todoTitle = signal<string>('');
@@ -82,17 +86,27 @@ export class ActivityList implements OnInit {
   }
 
   deleteActivity(activityId: number): void {
-    const confirmed = confirm('Are you sure you want to delete this activity?');
-    if (confirmed) {
-      this.activityService.deleteActivity(activityId).subscribe({
-        next: () => {
-          this.loadActivities();
-        },
-        error: (error) => {
-          console.error('Error deleting activity:', error);
-        }
-      });
-    }
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      data: {
+        title: 'Delete Activity',
+        message: 'Are you sure you want to delete this activity? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.activityService.deleteActivity(activityId).subscribe({
+          next: () => {
+            this.loadActivities();
+          },
+          error: (error) => {
+            console.error('Error deleting activity:', error);
+          }
+        });
+      }
+    });
   }
 
   editActivity(activityId: number): void {
