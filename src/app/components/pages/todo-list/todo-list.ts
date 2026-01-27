@@ -96,6 +96,10 @@ export class TodoList implements OnInit {
     }
   }
 
+  editTodo(todoId: number): void {
+    this.router.navigate(['/todos', todoId]);
+  }
+
   viewDetails(todoId: number): void {
     this.router.navigate(['/todos', todoId, 'activities']);
   }
