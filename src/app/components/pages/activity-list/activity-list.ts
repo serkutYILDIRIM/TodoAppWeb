@@ -95,6 +95,10 @@ export class ActivityList implements OnInit {
     }
   }
 
+  editActivity(activityId: number): void {
+    this.router.navigate(['/activities', activityId]);
+  }
+
   addActivity(): void {
     this.router.navigate(['/todos', this.todoId(), 'activities', 'create']);
   }

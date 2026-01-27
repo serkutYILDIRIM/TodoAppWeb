@@ -4,6 +4,7 @@ import { TodoList } from './components/pages/todo-list/todo-list';
 import { TodoCreate } from './components/pages/todo-create/todo-create';
 import { ActivityList } from './components/pages/activity-list/activity-list';
 import { ActivityCreate } from './components/pages/activity-create/activity-create';
+import { ActivityDetail } from './components/pages/activity-detail/activity-detail';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -34,6 +35,11 @@ export const routes: Routes = [
   {
     path: 'todos/:todoId/activities/create',
     component: ActivityCreate,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'activities/:id',
+    component: ActivityDetail,
     canActivate: [authGuard]
   },
   {

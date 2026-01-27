@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ActivityDto } from '../models/activity.dto';
 import { CreateActivityDto } from '../models/create-activity.dto';
+import { UpdateActivityDto } from '../models/update-activity.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,16 @@ export class ActivityService {
     return this.http.get<ActivityDto[]>(`${this.apiUrl}/todo/${todoId}`);
   }
 
+  getActivity(activityId: number): Observable<ActivityDto> {
+    return this.http.get<ActivityDto>(`${this.apiUrl}/${activityId}`);
+  }
+
   createActivity(dto: CreateActivityDto): Observable<ActivityDto> {
     return this.http.post<ActivityDto>(this.apiUrl, dto);
+  }
+
+  updateActivity(activityId: number, dto: UpdateActivityDto): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${activityId}`, dto);
   }
 
   toggleActivityCompletion(activityId: number): Observable<void> {

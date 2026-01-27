@@ -68,6 +68,11 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let activity">
+              <button mat-icon-button color="primary" 
+                      (click)="editActivity(activity.activityId)" 
+                      matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
               <button mat-icon-button color="warn" 
                       (click)="deleteActivity(activity.activityId)" 
                       matTooltip="Delete">
