@@ -1,8 +1,6 @@
 export interface User {
-  id: number;
+  userId: number;
   username: string;
-  email?: string;
-  fullName?: string;
 }
 
 export interface LoginRequest {
@@ -11,13 +9,12 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  token: string;
-  user: User;
-  expiresAt: Date;
+  userId: number;
+  username: string;
+  message: string;
 }
 
 export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
-  token: string | null;
 }
