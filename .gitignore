@@ -1,0 +1,71 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files (uncomment if they contain sensitive data)
+# /src/environments/environment.ts
+# /src/environments/environment.*.ts
+
+# Source maps
+*.js.map
+*.css.map
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+*.tgz
+
+# Angular cache
+.angular/
+
+# Backend related (for full-stack project reference)
+# Uncomment these if backend code is in the same repository
+# bin/
+# obj/
+# *.user
+# *.suo
+# appsettings.Development.json
+
