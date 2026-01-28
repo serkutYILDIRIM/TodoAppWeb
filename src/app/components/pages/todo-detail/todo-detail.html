@@ -1,0 +1,95 @@
+<div class="todo-detail-container">
+  <!-- Header -->
+  <mat-toolbar color="primary" class="header-toolbar">
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="app-title">Todo Details</span>
+  </mat-toolbar>
+
+  <!-- Main Content -->
+  <div class="content">
+    @if (loading()) {
+      <div class="loading-container">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+    } @else {
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>Edit Todo</mat-card-title>
+          <mat-card-subtitle>
+            Created: {{ createdDate() | date:'dd/MM/yyyy HH:mm' }}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <!-- Activity Stats -->
+          <div class="activity-stats">
+            <mat-chip-set>
+              <mat-chip highlighted>
+                <mat-icon>task</mat-icon>
+                Activities: {{ completedActivityCount() }}/{{ activityCount() }}
+              </mat-chip>
+            </mat-chip-set>
+            <button mat-stroked-button color="primary" (click)="viewActivities()">
+              <mat-icon>list</mat-icon>
+              View Activities
+            </button>
+          </div>
+
+          <form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+            <!-- Title Field -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Title</mat-label>
+              <input matInput formControlName="title" placeholder="Enter todo title" required>
+              @if (todoForm.get('title')?.invalid && todoForm.get('title')?.touched) {
+                <mat-error>{{ getErrorMessage('title') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- IsCompleted Checkbox -->
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="isCompleted">
+                Mark as completed
+              </mat-checkbox>
+            </div>
+
+            <!-- Detail Field -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Detail</mat-label>
+              <textarea 
+                matInput 
+                formControlName="detail" 
+                placeholder="Enter todo details"
+                rows="4">
+              </textarea>
+            </mat-form-field>
+
+            <!-- Priority Field -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Priority</mat-label>
+              <mat-select formControlName="priority" placeholder="Select priority">
+                <mat-option [value]="null">None</mat-option>
+                @for (priority of priorityOptions; track priority) {
+                  <mat-option [value]="priority">{{ priority }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+              <button mat-raised-button color="primary" type="submit">
+                <mat-icon>save</mat-icon>
+                Save
+              </button>
+              <button mat-button type="button" (click)="onCancel()">
+                <mat-icon>cancel</mat-icon>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

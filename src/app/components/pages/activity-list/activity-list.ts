@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,13 +11,14 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AuthService } from '../../../services/auth.service';
+import { ActivityService } from '../../../services/activity.service';
 import { TodoService } from '../../../services/todo.service';
+import { ActivityDto } from '../../../models/activity.dto';
 import { TodoItemDto } from '../../../models/todo-item.dto';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
-  selector: 'app-todo-list',
+  selector: 'app-activity-list',
   imports: [
     CommonModule,
     DatePipe,
@@ -32,62 +33,63 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
     MatProgressSpinnerModule,
     MatTooltipModule
   ],
-  templateUrl: './todo-list.html',
-  styleUrl: './todo-list.scss',
+  templateUrl: './activity-list.html',
+  styleUrl: './activity-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TodoList implements OnInit {
-  private readonly authService = inject(AuthService);
+export class ActivityList implements OnInit {
+  private readonly activityService = inject(ActivityService);
   private readonly todoService = inject(TodoService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly dialog = inject(MatDialog);
 
-  username = signal<string>('');
-  todos = signal<TodoItemDto[]>([]);
+  todoId = signal<number>(0);
+  todoTitle = signal<string>('');
+  activities = signal<ActivityDto[]>([]);
   loading = signal<boolean>(false);
-  displayedColumns: string[] = ['isCompleted', 'title', 'createdDate', 'priority', 'activities', 'actions'];
+  displayedColumns: string[] = ['isCompleted', 'title', 'createdDate', 'priority', 'actions'];
 
   ngOnInit(): void {
-    this.username.set(this.authService.getUsername() || 'User');
-    this.loadTodos();
-  }
-
-  loadTodos(): void {
-    const userId = this.authService.getUserId();
-    if (!userId) {
-      this.router.navigate(['/login']);
-      return;
+    const todoIdParam = this.route.snapshot.paramMap.get('todoId');
+    if (todoIdParam) {
+      this.todoId.set(+todoIdParam);
+      this.loadActivities();
+    } else {
+      this.router.navigate(['/todos']);
     }
+  }
 
+  loadActivities(): void {
     this.loading.set(true);
-    this.todoService.getTodosByUser(userId).subscribe({
-      next: (todos) => {
-        this.todos.set(todos);
+    this.activityService.getActivitiesByTodo(this.todoId()).subscribe({
+      next: (activities) => {
+        this.activities.set(activities);
         this.loading.set(false);
       },
       error: (error) => {
-        console.error('Error loading todos:', error);
+        console.error('Error loading activities:', error);
         this.loading.set(false);
       }
     });
   }
 
-  toggleCompletion(todo: TodoItemDto): void {
-    this.todoService.toggleTodoCompletion(todo.todoId).subscribe({
+  toggleCompletion(activity: ActivityDto): void {
+    this.activityService.toggleActivityCompletion(activity.activityId).subscribe({
       next: () => {
-        this.loadTodos();
+        this.loadActivities();
       },
       error: (error) => {
-        console.error('Error toggling todo:', error);
+        console.error('Error toggling activity:', error);
       }
     });
   }
 
-  deleteTodo(todoId: number): void {
+  deleteActivity(activityId: number): void {
     const dialogRef = this.dialog.open(ConfirmDialog, {
       data: {
-        title: 'Delete Todo',
-        message: 'Are you sure you want to delete this todo? This action cannot be undone.',
+        title: 'Delete Activity',
+        message: 'Are you sure you want to delete this activity? This action cannot be undone.',
         confirmText: 'Delete',
         cancelText: 'Cancel'
       }
@@ -95,28 +97,28 @@ export class TodoList implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.todoService.deleteTodo(todoId).subscribe({
+        this.activityService.deleteActivity(activityId).subscribe({
           next: () => {
-            this.loadTodos();
+            this.loadActivities();
           },
           error: (error) => {
-            console.error('Error deleting todo:', error);
+            console.error('Error deleting activity:', error);
           }
         });
       }
     });
   }
 
-  editTodo(todoId: number): void {
-    this.router.navigate(['/todos', todoId]);
+  editActivity(activityId: number): void {
+    this.router.navigate(['/activities', activityId]);
   }
 
-  viewDetails(todoId: number): void {
-    this.router.navigate(['/todos', todoId, 'activities']);
+  addActivity(): void {
+    this.router.navigate(['/todos', this.todoId(), 'activities', 'create']);
   }
 
-  addTodo(): void {
-    this.router.navigate(['/todos/create']);
+  goBack(): void {
+    this.router.navigate(['/todos']);
   }
 
   getPriorityColor(priority: string | null): string {
@@ -130,10 +132,5 @@ export class TodoList implements OnInit {
       default:
         return '';
     }
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

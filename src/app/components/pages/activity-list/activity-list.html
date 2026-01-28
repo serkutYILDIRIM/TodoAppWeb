@@ -1,19 +1,13 @@
-<div class="todo-list-container">
+<div class="activity-list-container">
   <!-- Header -->
   <mat-toolbar color="primary" class="header-toolbar">
-    <span class="app-title">
-      <mat-icon>task_alt</mat-icon>
-      To-Do Application
-    </span>
-    <span class="spacer"></span>
-    <span class="username-display">
-      <mat-icon>person</mat-icon>
-      {{ username() }}
-    </span>
-    <button mat-button (click)="logout()" class="logout-button">
-      <mat-icon>logout</mat-icon>
-      Logout
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
     </button>
+    <span class="app-title">
+      <mat-icon>checklist</mat-icon>
+      Activities
+    </span>
   </mat-toolbar>
 
   <!-- Main Content -->
@@ -24,15 +18,15 @@
       </div>
     } @else {
       <div class="table-container">
-        <table mat-table [dataSource]="todos()" class="todos-table">
+        <table mat-table [dataSource]="activities()" class="activities-table">
           
           <!-- IsCompleted Column -->
           <ng-container matColumnDef="isCompleted">
             <th mat-header-cell *matHeaderCellDef>Completed</th>
-            <td mat-cell *matCellDef="let todo">
+            <td mat-cell *matCellDef="let activity">
               <mat-checkbox 
-                [checked]="todo.isCompleted"
-                (change)="toggleCompletion(todo)">
+                [checked]="activity.isCompleted"
+                (change)="toggleCompletion(activity)">
               </mat-checkbox>
             </td>
           </ng-container>
@@ -40,26 +34,29 @@
           <!-- Title Column -->
           <ng-container matColumnDef="title">
             <th mat-header-cell *matHeaderCellDef>Title</th>
-            <td mat-cell *matCellDef="let todo">
-              <span [class.completed-title]="todo.isCompleted">{{ todo.title }}</span>
+            <td mat-cell *matCellDef="let activity">
+              <span [class.completed-title]="activity.isCompleted">{{ activity.title }}</span>
+              @if (activity.detail) {
+                <div class="activity-detail">{{ activity.detail }}</div>
+              }
             </td>
           </ng-container>
 
           <!-- Created Date Column -->
           <ng-container matColumnDef="createdDate">
             <th mat-header-cell *matHeaderCellDef>Created Date</th>
-            <td mat-cell *matCellDef="let todo">
-              {{ todo.createdDate | date:'dd/MM/yyyy HH:mm' }}
+            <td mat-cell *matCellDef="let activity">
+              {{ activity.createdDate | date:'dd/MM/yyyy HH:mm' }}
             </td>
           </ng-container>
 
           <!-- Priority Column -->
           <ng-container matColumnDef="priority">
             <th mat-header-cell *matHeaderCellDef>Priority</th>
-            <td mat-cell *matCellDef="let todo">
-              @if (todo.priority) {
-                <mat-chip [highlighted]="true" [class]="'priority-chip priority-' + todo.priority.toLowerCase()">
-                  {{ todo.priority }}
+            <td mat-cell *matCellDef="let activity">
+              @if (activity.priority) {
+                <mat-chip [highlighted]="true" [class]="'priority-chip priority-' + activity.priority.toLowerCase()">
+                  {{ activity.priority }}
                 </mat-chip>
               } @else {
                 <span class="no-priority">-</span>
@@ -67,32 +64,17 @@
             </td>
           </ng-container>
 
-          <!-- Activities Column -->
-          <ng-container matColumnDef="activities">
-            <th mat-header-cell *matHeaderCellDef>Activities</th>
-            <td mat-cell *matCellDef="let todo">
-              <span class="activity-count">
-                {{ todo.completedActivityCount }}/{{ todo.activityCount }} completed
-              </span>
-            </td>
-          </ng-container>
-
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let todo">
-              <button mat-icon-button color="accent" 
-                      (click)="editTodo(todo.todoId)" 
+            <td mat-cell *matCellDef="let activity">
+              <button mat-icon-button color="primary" 
+                      (click)="editActivity(activity.activityId)" 
                       matTooltip="Edit">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="primary" 
-                      (click)="viewDetails(todo.todoId)" 
-                      matTooltip="View Activities">
-                <mat-icon>list</mat-icon>
-              </button>
               <button mat-icon-button color="warn" 
-                      (click)="deleteTodo(todo.todoId)" 
+                      (click)="deleteActivity(activity.activityId)" 
                       matTooltip="Delete">
                 <mat-icon>delete</mat-icon>
               </button>
@@ -103,19 +85,18 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
-        @if (todos().length === 0) {
-          <div class="no-todos">
+        @if (activities().length === 0) {
+          <div class="no-activities">
             <mat-icon>inbox</mat-icon>
-            <p>No todos found. Click the + button to add a new todo.</p>
+            <p>No activities found. Click the + button to add a new activity.</p>
           </div>
         }
       </div>
     }
 
     <!-- Floating Action Button -->
-    <button mat-fab color="primary" class="fab-add-todo" (click)="addTodo()">
+    <button mat-fab color="primary" class="fab-add-activity" (click)="addActivity()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
 </div>
-
