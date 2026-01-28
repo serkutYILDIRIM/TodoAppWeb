@@ -35,9 +35,6 @@ export class AuthService {
     return isPlatformBrowser(this.platformId);
   }
 
-  /**
-   * Login user with username and password
-   */
   login(username: string, password: string): Observable<LoginResponse> {
     const loginRequest: LoginRequest = { username, password };
 
@@ -61,9 +58,8 @@ export class AuthService {
       );
   }
 
-  /**
-   * Logout user and clear localStorage
-   */
+
+   // Logout user and clear localStorage
   logout(): void {
     if (this.isBrowser()) {
       localStorage.removeItem(this.USER_ID_KEY);
@@ -72,9 +68,8 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  /**
-   * Check if user is authenticated
-   */
+
+   // Check if user is authenticated
   isAuthenticated(): boolean {
     if (!this.isBrowser()) {
       return false;
@@ -84,9 +79,7 @@ export class AuthService {
     return !!(userId && username);
   }
 
-  /**
-   * Get current user from localStorage
-   */
+   //Get current user from localStorage
   getCurrentUser(): User | null {
     if (!this.isBrowser()) {
       return null;
@@ -105,9 +98,7 @@ export class AuthService {
     return null;
   }
 
-  /**
-   * Get current user ID
-   */
+   // Get current user ID
   getUserId(): number | null {
     if (!this.isBrowser()) {
       return null;
@@ -116,9 +107,7 @@ export class AuthService {
     return userId ? parseInt(userId, 10) : null;
   }
 
-  /**
-   * Get current username
-   */
+  // Get current username
   getUsername(): string | null {
     if (!this.isBrowser()) {
       return null;
@@ -126,9 +115,7 @@ export class AuthService {
     return localStorage.getItem(this.USERNAME_KEY);
   }
 
-  /**
-   * Handle HTTP errors
-   */
+  // Handle HTTP errors
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred during login';
 

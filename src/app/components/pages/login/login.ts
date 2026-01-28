@@ -37,16 +37,12 @@ export class Login {
   hidePassword: boolean = true;
 
   constructor() {
-    // Initialize the form with validators
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(3)]]
     });
   }
 
-  /**
-   * Handle form submission
-   */
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
